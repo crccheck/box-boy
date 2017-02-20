@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/crccheck/box-boy#readme",
   "dependencies": {
+    "d3": "^4.6.0",
     "static-kdtree": "^1.0.1"
   },
   "devDependencies": {
