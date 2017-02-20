@@ -1,6 +1,6 @@
 const d3 = require('d3')
 
-const MAX_ELEMENTS = 4
+const MAX_ELEMENTS = 20
 const root = d3.select('#sandbox')
 
 function add() {
@@ -16,12 +16,13 @@ function add() {
   const vh = window.innerHeight
 
   root.append('div')
-    .datum([500, 500])
+    .datum([0 | Math.random() * 500, 0 | Math.random() * 500])
     .style('background', 'rgba(0, 0, 255, 0.2)')
     .style('width', ([w, h]) => `${w}px`)
     .style('height', ([w, h]) => `${h}px`)
     .style('left', ([w, h]) => `${0 | Math.random() * (vw - w)}px`)
+    .style('top', ([w, h]) => `${0 | Math.random() * (vh - h)}px`)
 }
 
 add()
-setInterval(add, 2000)
+setInterval(add, 1000)
