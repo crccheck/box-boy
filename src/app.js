@@ -3,6 +3,13 @@ const d3 = require('d3')
 const MAX_ELEMENTS = 20
 const root = d3.select('#sandbox')
 
+const choices = [
+  [400, 300],  // 4:3
+  [300, 400],  // 4:3
+  [460, 260],  // 16:9
+  [260, 460],  // 16:9
+]
+
 function add() {
   // Trim extra elements
   const existing = root.selectAll('div')
@@ -16,7 +23,7 @@ function add() {
   const vh = window.innerHeight
 
   root.append('div')
-    .datum([0 | Math.random() * 500, 0 | Math.random() * 500])
+    .datum(choices[0 | Math.random() * choices.length])
     .style('background', 'rgba(0, 0, 255, 0.2)')
     .style('width', ([w, h]) => `${w}px`)
     .style('height', ([w, h]) => `${h}px`)
