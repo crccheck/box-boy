@@ -1,0 +1,35 @@
+{
+  "name": "box-boy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch:css": "node-sass src --output public --watch",
+    "watch:js": "watchify src/app.js -o public/app.js -t babelify",
+    "serve": "browser-sync start --server public --files public --no-open",
+    "dev": "concurrently --kill-others 'npm run serve' 'npm run watch:css' 'npm run watch:js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crccheck/box-boy.git"
+  },
+  "keywords": [],
+  "author": "Chris Chang <c@crccheck.com> (http://crccheck.com/blog)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crccheck/box-boy/issues"
+  },
+  "homepage": "https://github.com/crccheck/box-boy#readme",
+  "dependencies": {
+    "static-kdtree": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.1.8",
+    "babelify": "^7.3.0",
+    "browser-sync": "^2.18.8",
+    "browserify": "^14.1.0",
+    "concurrently": "^3.3.0",
+    "node-sass": "^4.5.0",
+    "watchify": "^3.9.0"
+  }
+}
