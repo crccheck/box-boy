@@ -1,7 +1,8 @@
 const d3 = require('d3')
 window.d3 = d3  // DEBUG
 
-const MAX_ELEMENTS = 50
+const MAX_ELEMENTS = 36
+const VORONOI_LIMIT = 6
 
 const choices = [
   [400, 300],  // 4:3
@@ -9,13 +10,16 @@ const choices = [
   [460, 260],  // 16:9
   [260, 460],  // 16:9
 ]
+// const choices = [
+//   [10, 10],
+// ]
 
 let colorGlobal = 0
 
 function add(root) {
   // Trim extra elements
   const existing = root.selectAll('rect')
-  const count = existing.data().length  // TODO what's the real way to do this?
+  const count = existing.size()
   if (count > MAX_ELEMENTS) {
     existing.filter((d, i) => i < count - MAX_ELEMENTS).remove()
   }
@@ -34,11 +38,39 @@ function add(root) {
     .attr('transform', ([w, h]) => `translate(${0 | Math.random() * (vw - w)} ${0 | Math.random() * (vh - h)})`)
 
   colorGlobal = colorGlobal % 360
+  const targetRects = root.selectAll('rect').filter(`:nth-last-child(-n + ${VORONOI_LIMIT})`)
+  const targetBBoxes = []
+  targetRects.each(function(d, i) {
+    targetBBoxes.push(this.getBoundingClientRect())
+  })
+  const targetData = targetBBoxes.map((x) => [(x.left + x.right)/2, (x.top + x.bottom) / 2])
+  const voronoi = d3.voronoi().extent([[-1, -1], [vw + 1, vh + 1]])
+
+  const polygons = vRoot.selectAll('path')
+    .data(voronoi.polygons(targetData))
+  polygons
+    .enter()
+      .append('path')
+  polygons
+    .attr('d', (d) => d ? `M${d.join('L')}Z` : null);
+  polygons.exit().remove()
 }
 
 
 const root = d3.select('#sandbox')
   .append('g')
   .attr('class', 'rectangles')
+
+const vRoot = d3.select('#sandbox')
+  .append('g')
+  .attr('class', 'voroni')
+
 add(root)
-setInterval(() => add(root), 50)
+
+let masterTimer = setInterval(() => add(root), 200)
+document.onkeyup = (e) => {
+  if (masterTimer && e.keyCode === 27) {
+    clearTimeout(masterTimer)
+    masterTimer = false
+  }
+}
