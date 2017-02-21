@@ -17,7 +17,40 @@ const choices = [
 
 let colorGlobal = 0
 
-function add(root) {
+
+function drawVoronoi (root) {
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+
+  const targetRects = root.selectAll('rect').filter(`:nth-last-child(-n + ${VORONOI_LIMIT})`)
+  const targetBBoxes = []
+  targetRects.each(function (d, i) {
+    targetBBoxes.push(this.getBoundingClientRect())
+  })
+  const targetData = targetBBoxes.map((x) => [(x.left + x.right) / 2, (x.top + x.bottom) / 2])
+  const voronoi = d3.voronoi().extent([[-1, -1], [vw + 1, vh + 1]])
+
+  const polygons = vRoot.selectAll('path')
+    .data(voronoi.polygons(targetData))
+  polygons
+    .enter()
+      .append('path')
+  polygons
+    .attr('d', (d) => d ? `M${d.join('L')}Z` : null)
+  polygons.exit().remove()
+
+  // const triangles = tRoot.selectAll('path')
+  //   .data(voronoi.triangles(targetData))
+  // triangles
+  //   .enter()
+  //     .append('path')
+  // triangles
+  //   .attr('d', (d) => d ? `M${d.join('L')}Z` : null)
+  // triangles.exit().remove()
+}
+
+
+function add (root) {
   // Trim extra elements
   const existing = root.selectAll('rect')
   const count = existing.size()
@@ -37,31 +70,9 @@ function add(root) {
     .attr('transform', ([w, h]) => `translate(${0 | Math.random() * (vw - w)} ${0 | Math.random() * (vh - h)})`)
 
   colorGlobal = colorGlobal % 360
-  const targetRects = root.selectAll('rect').filter(`:nth-last-child(-n + ${VORONOI_LIMIT})`)
-  const targetBBoxes = []
-  targetRects.each(function(d, i) {
-    targetBBoxes.push(this.getBoundingClientRect())
-  })
-  const targetData = targetBBoxes.map((x) => [(x.left + x.right)/2, (x.top + x.bottom) / 2])
-  const voronoi = d3.voronoi().extent([[-1, -1], [vw + 1, vh + 1]])
-
-  const polygons = vRoot.selectAll('path')
-    .data(voronoi.polygons(targetData))
-  polygons
-    .enter()
-      .append('path')
-  polygons
-    .attr('d', (d) => d ? `M${d.join('L')}Z` : null);
-  polygons.exit().remove()
-
-  const triangles = tRoot.selectAll('path')
-    .data(voronoi.triangles(targetData))
-  triangles
-    .enter()
-      .append('path')
-  triangles
-    .attr('d', (d) => d ? `M${d.join('L')}Z` : null);
-  triangles.exit().remove()
+  if (window.location.search.includes('v=')) {
+    drawVoronoi(root)
+  }
 }
 
 
@@ -79,7 +90,7 @@ const tRoot = d3.select('#sandbox')
 
 add(root)
 
-let masterTimer = setInterval(() => add(root), 2000)
+let masterTimer = setInterval(() => add(root), 1000)
 document.onkeyup = (e) => {
   if (masterTimer && e.keyCode === 27) {
     clearTimeout(masterTimer)

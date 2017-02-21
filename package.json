@@ -7,7 +7,9 @@
     "watch:css": "node-sass src --output public --watch",
     "watch:js": "watchify src/app.js -o public/app.js -t babelify",
     "serve": "browser-sync start --server public --files public --no-open",
-    "dev": "concurrently --kill-others 'npm run serve' 'npm run watch:css' 'npm run watch:js'"
+    "dev": "concurrently --kill-others 'npm run serve' 'npm run watch:css' 'npm run watch:js'",
+    "lint": "eslint src/",
+    "pretest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,10 @@
     "browser-sync": "^2.18.8",
     "browserify": "^14.1.0",
     "concurrently": "^3.3.0",
+    "eslint": "^3.16.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.2",
+    "eslint-plugin-standard": "^2.0.1",
     "node-sass": "^4.5.0",
     "watchify": "^3.9.0"
   }
