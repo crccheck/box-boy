@@ -3,8 +3,23 @@ body {
   margin: 0;
   overflow: hidden;
 }
+// rect filter(`:nth-last-child(-n + ${VORONOI_LIMIT})`)
+rect {
+  fill-opacity: 0.2;
+  stroke-opacity: 0.7;
+  &:nth-last-child(-n + 4) {
+    fill-opacity: 0.5;
+    // stroke: red;
+  }
+}
 
-path {
+.voronoi path {
   fill: none;
   stroke: black;
+}
+
+.triangles path {
+  fill: none;
+  stroke: red;
+  stroke-width: 2;
 }

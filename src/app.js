@@ -1,8 +1,9 @@
 const d3 = require('d3')
 window.d3 = d3  // DEBUG
 
-const MAX_ELEMENTS = 36
+const MAX_ELEMENTS = 20
 const VORONOI_LIMIT = 6
+const COLOR_ANGLE = 360 / MAX_ELEMENTS
 
 const choices = [
   [400, 300],  // 4:3
@@ -29,10 +30,8 @@ function add(root) {
 
   root.append('rect')
     .datum(choices[0 | Math.random() * choices.length])
-    .attr('fill', d3.cubehelix(colorGlobal += 10, 0.9, 0.7))
-    .attr('fill-opacity', 0.2)
+    .attr('fill', d3.cubehelix(colorGlobal += COLOR_ANGLE, 0.9, 0.7))
     .attr('stroke', d3.cubehelix(colorGlobal, 0.9, 0.7))
-    .attr('stroke-opacity', 0.7)
     .attr('width', ([w, h]) => w)
     .attr('height', ([w, h]) => h)
     .attr('transform', ([w, h]) => `translate(${0 | Math.random() * (vw - w)} ${0 | Math.random() * (vh - h)})`)
@@ -54,6 +53,15 @@ function add(root) {
   polygons
     .attr('d', (d) => d ? `M${d.join('L')}Z` : null);
   polygons.exit().remove()
+
+  const triangles = tRoot.selectAll('path')
+    .data(voronoi.triangles(targetData))
+  triangles
+    .enter()
+      .append('path')
+  triangles
+    .attr('d', (d) => d ? `M${d.join('L')}Z` : null);
+  triangles.exit().remove()
 }
 
 
@@ -63,11 +71,15 @@ const root = d3.select('#sandbox')
 
 const vRoot = d3.select('#sandbox')
   .append('g')
-  .attr('class', 'voroni')
+  .attr('class', 'voronoi')
+
+const tRoot = d3.select('#sandbox')
+  .append('g')
+  .attr('class', 'triangles')
 
 add(root)
 
-let masterTimer = setInterval(() => add(root), 200)
+let masterTimer = setInterval(() => add(root), 2000)
 document.onkeyup = (e) => {
   if (masterTimer && e.keyCode === 27) {
     clearTimeout(masterTimer)
