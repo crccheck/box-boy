@@ -1,0 +1,19 @@
+body {
+  background-color: white;
+  margin: 0;
+  overflow: hidden; }
+
+rect {
+  fill-opacity: 0.2;
+  stroke-opacity: 0.7; }
+  rect:nth-last-child(-n + 4) {
+    fill-opacity: 0.5; }
+
+.voronoi path {
+  fill: none;
+  stroke: black; }
+
+.triangles path {
+  fill: none;
+  stroke: red;
+  stroke-width: 2; }
